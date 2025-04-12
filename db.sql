@@ -72,24 +72,25 @@ INSERT INTO Transactions (account_id, transaction_type, transaction_date, descri
 
 -- Products
 
--- Existing tables for product categories and products:
-
+-- Create the table for product categories
 CREATE TABLE product_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     color TEXT NOT NULL
 );
 
+-- Create the table for products with an additional column "impact_level"
 CREATE TABLE products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     category_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
     react_icon TEXT NOT NULL,
+    impact_level TEXT NOT NULL CHECK (impact_level IN ('low', 'mid', 'high')),
     FOREIGN KEY (category_id) REFERENCES product_categories(id)
 );
 
--- Documents table: Each product can have multiple connected documents.
+-- Create the documents table to link one or more documents to a product.
 CREATE TABLE documents (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id INTEGER NOT NULL,
@@ -97,8 +98,7 @@ CREATE TABLE documents (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
--- Existing Insertions for product categories and products (including Packages):
-
+-- Insert product categories with assigned colors
 INSERT INTO product_categories (name, color) VALUES ('Credit', '#e74c3c');                -- Group 1: Red-ish
 INSERT INTO product_categories (name, color) VALUES ('Investment Solutions', '#3498db');   -- Group 2: Blue
 INSERT INTO product_categories (name, color) VALUES ('Investment Products', '#2ecc71');    -- Group 3: Green
@@ -111,91 +111,94 @@ INSERT INTO product_categories (name, color) VALUES ('Credit and Debit Cards', '
 INSERT INTO product_categories (name, color) VALUES ('Packages', '#d35400');               -- Group 10: Orange-red
 
 -- Group 1: Credit
-INSERT INTO products (category_id, name, react_icon) VALUES (1, 'Lombard Loan', 'FaHandHoldingUsd');
-INSERT INTO products (category_id, name, react_icon) VALUES (1, 'Private or Automotive Loan', 'FaCar');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (1, 'Lombard Loan', 'FaHandHoldingUsd', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (1, 'Private or Automotive Loan', 'FaCar', 'mid');
 
 -- Group 2: Investment Solutions
-INSERT INTO products (category_id, name, react_icon) VALUES (2, 'Wealth Management Mandate', 'FaBriefcase');
-INSERT INTO products (category_id, name, react_icon) VALUES (2, 'Raiffeisen Rio', 'FaWater');
-INSERT INTO products (category_id, name, react_icon) VALUES (2, 'Advisory Mandate', 'FaComments');
-INSERT INTO products (category_id, name, react_icon) VALUES (2, 'Investment Fund Savings Plan', 'FaPiggyBank');
-INSERT INTO products (category_id, name, react_icon) VALUES (2, 'Securities Deposit', 'FaRegFileAlt');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (2, 'Wealth Management Mandate', 'FaBriefcase', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (2, 'Raiffeisen Rio', 'FaWater', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (2, 'Advisory Mandate', 'FaComments', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (2, 'Investment Fund Savings Plan', 'FaPiggyBank', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (2, 'Securities Deposit', 'FaRegFileAlt', 'low');
 
 -- Group 3: Investment Products
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Investment Funds', 'FaChartPie');
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Structured Products', 'FaCubes');
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Currency Instruments', 'FaExchangeAlt');
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Precious Metals', 'FaGem');
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Additional Tier 1 Loan', 'FaHandshake');
-INSERT INTO products (category_id, name, react_icon) VALUES (3, 'Term Investment', 'FaClock');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Investment Funds', 'FaChartPie', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Structured Products', 'FaCubes', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Currency Instruments', 'FaExchangeAlt', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Precious Metals', 'FaGem', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Additional Tier 1 Loan', 'FaHandshake', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (3, 'Term Investment', 'FaClock', 'mid');
 
 -- Group 4: Investment Themes
-INSERT INTO products (category_id, name, react_icon) VALUES (4, 'Tech Innovators', 'FaLaptop');
-INSERT INTO products (category_id, name, react_icon) VALUES (4, 'Smart Healthcare', 'FaHeartbeat');
-INSERT INTO products (category_id, name, react_icon) VALUES (4, 'Aqua', 'FaTint');
-INSERT INTO products (category_id, name, react_icon) VALUES (4, 'Green Energy', 'FaLeaf');
-INSERT INTO products (category_id, name, react_icon) VALUES (4, 'Top Swiss Pick', 'FaStar');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (4, 'Tech Innovators', 'FaLaptop', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (4, 'Smart Healthcare', 'FaHeartbeat', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (4, 'Aqua', 'FaTint', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (4, 'Green Energy', 'FaLeaf', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (4, 'Top Swiss Pick', 'FaStar', 'low');
 
 -- Group 5: Mortgage
-INSERT INTO products (category_id, name, react_icon) VALUES (5, 'Fixed Rate Mortgage', 'FaLock');
-INSERT INTO products (category_id, name, react_icon) VALUES (5, 'SARON Flex Mortgage', 'FaSyncAlt');
-INSERT INTO products (category_id, name, react_icon) VALUES (5, 'Variable Rate Mortgage', 'FaPercentage');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (5, 'Fixed Rate Mortgage', 'FaLock', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (5, 'SARON Flex Mortgage', 'FaSyncAlt', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (5, 'Variable Rate Mortgage', 'FaPercentage', 'high');
 
 -- Group 6: Investment Advice
-INSERT INTO products (category_id, name, react_icon) VALUES (6, 'Retirement and Insurance Advice', 'FaUserTie');
-INSERT INTO products (category_id, name, react_icon) VALUES (6, 'Retirement Planning Advice', 'FaRegCalendarAlt');
-INSERT INTO products (category_id, name, react_icon) VALUES (6, 'Succession Advice and Mandate for Incapacity', 'FaBalanceScaleLeft');
-INSERT INTO products (category_id, name, react_icon) VALUES (6, 'Retirement and Investment Advice', 'FaChartLine');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (6, 'Retirement and Insurance Advice', 'FaUserTie', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (6, 'Retirement Planning Advice', 'FaRegCalendarAlt', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (6, 'Succession Advice and Mandate for Incapacity', 'FaBalanceScaleLeft', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (6, 'Retirement and Investment Advice', 'FaChartLine', 'mid');
 
 -- Group 7: Pension Products
-INSERT INTO products (category_id, name, react_icon) VALUES (7, 'Pillar 3a Account', 'FaWallet');
-INSERT INTO products (category_id, name, react_icon) VALUES (7, 'Pension Funds', 'FaUniversity');
-INSERT INTO products (category_id, name, react_icon) VALUES (7, 'Digital Pillar 3a', 'FaMobileAlt');
-INSERT INTO products (category_id, name, react_icon) VALUES (7, 'Prevision Investment Fund Savings Plan', 'FaRegChartBar');
-INSERT INTO products (category_id, name, react_icon) VALUES (7, 'Savings Goals Coverage', 'FaBullseye');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (7, 'Pillar 3a Account', 'FaWallet', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (7, 'Pension Funds', 'FaUniversity', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (7, 'Digital Pillar 3a', 'FaMobileAlt', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (7, 'Prevision Investment Fund Savings Plan', 'FaRegChartBar', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (7, 'Savings Goals Coverage', 'FaBullseye', 'low');
 
 -- Group 8: Raiffeisen Insurances
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Amortization Insurance', 'FaRegCreditCard');
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Household Insurance', 'FaHome');
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Death Insurance', 'FaSkull');
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Income Disability Pension', 'FaHospital');
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Capital Life Insurance', 'FaHeart');
-INSERT INTO products (category_id, name, react_icon) VALUES (8, 'Home Insurance', 'FaShieldAlt');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Amortization Insurance', 'FaRegCreditCard', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Household Insurance', 'FaHome', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Death Insurance', 'FaSkull', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Income Disability Pension', 'FaHospital', 'high');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Capital Life Insurance', 'FaHeart', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (8, 'Home Insurance', 'FaShieldAlt', 'mid');
 
 -- Group 9: Credit and Debit Cards
-INSERT INTO products (category_id, name, react_icon) VALUES (9, 'Debit Card (Visa/Mastercard)', 'FaCreditCard');
-INSERT INTO products (category_id, name, react_icon) VALUES (9, 'Standard Credit Card (Visa/Mastercard - 1 Year Free)', 'FaCcVisa');
-INSERT INTO products (category_id, name, react_icon) VALUES (9, 'Gold Credit Card (No Fees for EUR/USD & Worldwide Replacement)', 'FaCcMastercard');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (9, 'Debit Card (Visa/Mastercard)', 'FaCreditCard', 'low');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (9, 'Standard Credit Card (Visa/Mastercard - 1 Year Free)', 'FaCcVisa', 'mid');
+INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (9, 'Gold Credit Card (No Fees for EUR/USD & Worldwide Replacement)', 'FaCcMastercard', 'high');
 
 -- Group 10: Packages
-INSERT INTO products (category_id, name, description, react_icon) VALUES (
+INSERT INTO products (category_id, name, description, react_icon, impact_level) VALUES (
     10,
     'YoungMemberPlus',
     'For individuals under 26 years old',
-    'FaChild'
+    'FaChild',
+    'low'
 );
-INSERT INTO products (category_id, name, description, react_icon) VALUES (
+INSERT INTO products (category_id, name, description, react_icon, impact_level) VALUES (
     10,
     'Essential',
     'A monthly fee of CHF 9 is charged if the following condition is not met: A regular income entry (e.g., salary or pension) of at least CHF 1,260, or mortgage/savings/deposit or retirement capital of at least CHF 20,000. The condition must be met for at least three consecutive months and then continuously. The reference date for taxation is November 30.',
-    'FaInfoCircle'
+    'FaInfoCircle',
+    'high'
 );
-INSERT INTO products (category_id, name, description, react_icon) VALUES (
+INSERT INTO products (category_id, name, description, react_icon, impact_level) VALUES (
     10,
     'Member',
     'Preferred interest rate on savings account plus share of Raiffeisen',
-    'FaUser'
+    'FaUser',
+    'mid'
 );
-INSERT INTO products (category_id, name, description, react_icon) VALUES (
+INSERT INTO products (category_id, name, description, react_icon, impact_level) VALUES (
     10,
     'Member Plus',
     'Preferred interest rate on savings account plus free concert and museum tickets',
-    'FaCrown'
+    'FaCrown',
+    'high'
 );
 
--- Insert a document for the "Essential" product.
--- This example uses a subquery to find the product id for "Essential"
-INSERT INTO documents (product_id, url)
+-- Example: Insert a document for the "Essential" product.
+INSERT INTO documents (product_id, url) 
 VALUES (
     (SELECT id FROM products WHERE name = 'Essential'),
     'https://www.raiffeisen.ch/content/dam/www/rch/pdf/produkte/zahlen/fr/compte-prive-fiche-produit.pdf'
