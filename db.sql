@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS PaymentMethods (
     FOREIGN KEY (client_id) REFERENCES Clients (client_id) ON DELETE CASCADE
 );
 
+
 -- --- Create Product Catalog Tables (IF NOT EXISTS) ---
 CREATE TABLE IF NOT EXISTS product_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -115,14 +116,17 @@ CREATE TABLE IF NOT EXISTS documents (
 -- ##############################################################
 
 -- 1. Insert Client: Peter Muster (Idempotent based on client_identifier)
-INSERT INTO Clients (first_name, last_name, client_identifier, membership_number, full_name, client_type)
-VALUES ('Peter', 'Muster', '111.111.111.1', '123.456.789.0', 'Peter Muster', 'Individual')
+INSERT INTO Clients (first_name, last_name, client_identifier, membership_number, full_name, client_type, email, phone, address)
+VALUES ('Peter', 'Muster', '111.111.111.1', '123.456.789.0', 'Peter Muster', 'Individual', 'peter.muster@email.ch', '+41 79 111 22 33', 'Musterstrasse 1, 9000 St. Gallen')
 ON CONFLICT(client_identifier) DO UPDATE SET
     first_name=excluded.first_name,
     last_name=excluded.last_name,
     membership_number=excluded.membership_number,
     full_name=excluded.full_name,
-    client_type=excluded.client_type;
+    client_type=excluded.client_type,
+    email=excluded.email,
+    phone=excluded.phone,
+    address=excluded.address;
 
 -- 2. Insert Accounts for Peter Muster (Idempotent using account_number)
 -- Using SELECT with WHERE NOT EXISTS to ensure idempotency
@@ -184,59 +188,170 @@ FROM Clients c WHERE c.client_identifier = '111.111.111.1' AND NOT EXISTS (SELEC
 
 
 -- 3. Insert Holdings for Peter Muster's Wertschriftendepot (Idempotent using account_id + isin)
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'Swiss Re AG - Namenaktie', 'CH0126881561', '12688156', 150, 76.16, -1633.50, -12.51
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Swiss Re AG - Namenaktie', 'CH0126881561', '12688156', 150, 76.16, -1633.50, -12.51, 'CHF'
 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0126881561');
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'Zur Rose Group AG - Namenaktie', 'CH0042615283', '4261528', 50, 60.40, -12802.39, -80.91 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0042615283');
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'ABB Ltd - Namenaktie', 'CH0012221716', '1222171', 100, 28.81, 1263.00, 78.06 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0012221716');
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'Novartis AG - Namenaktie', 'CH0012005267', '1200526', 35, 80.45, 1014.49, 56.32 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0012005267');
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'Logitech International SA - Namenaktie', 'CH0025751329', '2575132', 50, 54.96, -721.44, -20.79 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0025751329');
-INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent)
-SELECT a.account_id, 'Stadler Rail AG - Namenaktie', 'CH0002178181', '217818', 50, 31.12, -664.12, -29.91 FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0002178181');
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Zur Rose Group AG - Namenaktie', 'CH0042615283', '4261528', 50, 60.40, -12802.39, -80.91, 'CHF' FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0042615283');
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'ABB Ltd - Namenaktie', 'CH0012221716', '1222171', 100, 28.81, 1263.00, 78.06, 'CHF' FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0012221716');
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Novartis AG - Namenaktie', 'CH0012005267', '1200526', 35, 80.45, 1014.49, 56.32, 'CHF' FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0012005267');
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Logitech International SA - Namenaktie', 'CH0025751329', '2575132', 50, 54.96, -721.44, -20.79, 'CHF' FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0025751329');
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Stadler Rail AG - Namenaktie', 'CH0002178181', '217818', 50, 31.12, -664.12, -29.91, 'CHF' FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = '123456789A' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0002178181');
 
--- 4. Insert Transactions for Peter Muster's Mitglieder Privatkonto (Idempotent using account_id, date, amount)
+-- 4. Insert Transactions for Peter Muster's Mitglieder Privatkonto (Idempotent using account_id, date, amount, description)
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-07-06 00:00:00', 'E-Banking Sammellauf aus Einzahlungen', -750.25, 'Transfer_Out', 13459.10
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-07-06 00:00:00' AND t.amount = -750.25);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-07-06 00:00:00' AND t.amount = -750.25 AND t.description = 'E-Banking Sammellauf aus Einzahlungen');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-06-05 00:00:00', 'Gutschrift TWINT von Muster Blumen GmbH', 49.80, 'Transfer_In', 14209.35
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-05 00:00:00' AND t.amount = 49.80);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-05 00:00:00' AND t.amount = 49.80 AND t.description = 'Gutschrift TWINT von Muster Blumen GmbH');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-06-04 00:00:00', 'E-Banking Sammellauf aus Einzahlungen', -1650.00, 'Transfer_Out', 14159.55
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-04 00:00:00' AND t.amount = -1650.00);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-04 00:00:00' AND t.amount = -1650.00 AND t.description = 'E-Banking Sammellauf aus Einzahlungen');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-06-02 09:10:00', 'Bezug Bancomat Rorschach', -400.00, 'Withdrawal', 15809.55
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-02 09:10:00' AND t.amount = -400.00);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-02 09:10:00' AND t.amount = -400.00 AND t.description = 'Bezug Bancomat Rorschach');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-05-18 00:00:00', 'E-Banking Sammellauf aus Einzahlungen', -3406.15, 'Transfer_Out', 16209.55
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-05-18 00:00:00' AND t.amount = -3406.15);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-05-18 00:00:00' AND t.amount = -3406.15 AND t.description = 'E-Banking Sammellauf aus Einzahlungen');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-05-02 09:10:00', 'Bezug Bancomat Rorschach', -600.00, 'Withdrawal', 19615.70
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-05-02 09:10:00' AND t.amount = -600.00);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-05-02 09:10:00' AND t.amount = -600.00 AND t.description = 'Bezug Bancomat Rorschach');
 INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
 SELECT a.account_id, '2022-04-07 11:04:00', 'Einkauf Metzgerei Müller', -116.00, 'Withdrawal', 20215.70
-FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-04-07 11:04:00' AND t.amount = -116.00);
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '111.111.111.1' AND a.account_number = 'CH00 0000 0000 0000 0000 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-04-07 11:04:00' AND t.amount = -116.00 AND t.description = 'Einkauf Metzgerei Müller');
 
 -- 5. Insert Payment Methods for Peter Muster (Idempotent using client_id + type + name)
-INSERT INTO PaymentMethods (client_id, method_type, name, daily_limit, monthly_limit)
-SELECT c.client_id, 'TWINT', 'Raiffeisen TWINT', 3000.00, 5000.00
+INSERT INTO PaymentMethods (client_id, method_type, name, daily_limit, monthly_limit, currency)
+SELECT c.client_id, 'TWINT', 'Raiffeisen TWINT', 3000.00, 5000.00, 'CHF'
 FROM Clients c WHERE c.client_identifier = '111.111.111.1'
   AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'TWINT' AND p.name = 'Raiffeisen TWINT');
 
-INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date, daily_limit, monthly_limit)
-SELECT c.client_id, 'Debit Card', 'Debit Mastercard Private', '1111xxxx1111', '04/2025', 5000.00, 10000.00
+INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date, daily_limit, monthly_limit, currency)
+SELECT c.client_id, 'Debit Card', 'Debit Mastercard Private', '1111xxxx1111', '04/2025', 5000.00, 10000.00, 'CHF'
 FROM Clients c WHERE c.client_identifier = '111.111.111.1'
   AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Debit Card' AND p.name = 'Debit Mastercard Private');
 
-INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date)
-SELECT c.client_id, 'Credit Card', 'Raiffeisen Mastercard Gold', '2222xxxx2222', '03/2024'
+INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date, currency)
+SELECT c.client_id, 'Credit Card', 'Raiffeisen Mastercard Gold', '2222xxxx2222', '03/2024', 'CHF'
 FROM Clients c WHERE c.client_identifier = '111.111.111.1'
   AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Credit Card' AND p.name = 'Raiffeisen Mastercard Gold');
 
+-- ##############################################################
+-- ### INSERT CLIENT 2: Maria Schmidt DATA                   ###
+-- ##############################################################
+
+-- 1. Insert Client: Maria Schmidt
+INSERT INTO Clients (first_name, last_name, client_identifier, membership_number, full_name, client_type, email, phone, address)
+VALUES ('Maria', 'Schmidt', '222.222.222.2', '987.654.321.0', 'Maria Schmidt', 'Individual', 'maria.schmidt@email.com', '+41 78 123 45 67', 'Hauptstrasse 10, 8001 Zürich')
+ON CONFLICT(client_identifier) DO UPDATE SET
+    first_name=excluded.first_name,
+    last_name=excluded.last_name,
+    membership_number=excluded.membership_number,
+    full_name=excluded.full_name,
+    client_type=excluded.client_type,
+    email=excluded.email,
+    phone=excluded.phone,
+    address=excluded.address;
+
+-- 2. Insert Accounts for Maria Schmidt
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency)
+SELECT c.client_id, 'CH11 0000 0000 0000 0001 1', 'Checking', 'Privatkonto', 'Konten', 5234.50, 'CHF'
+FROM Clients c WHERE c.client_identifier = '222.222.222.2' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'CH11 0000 0000 0000 0001 1');
+
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency)
+SELECT c.client_id, 'CH22 0000 0000 0000 0002 2', 'Savings', 'Sparkonto Plus', 'Konten', 25890.15, 'CHF'
+FROM Clients c WHERE c.client_identifier = '222.222.222.2' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'CH22 0000 0000 0000 0002 2');
+
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency)
+SELECT c.client_id, 'DEP987654', 'Investment', 'Kleinanlagen Depot', 'Anlagen', 8150.75, 'CHF'
+FROM Clients c WHERE c.client_identifier = '222.222.222.2' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'DEP987654');
+
+-- 3. Insert Holdings for Maria Schmidt's Kleinanlagen Depot
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Roche Holding AG - Genussschein', 'CH0012032048', '1203204', 10, 305.50, 255.00, 9.11, 'CHF'
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '222.222.222.2' AND a.account_number = 'DEP987654' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0012032048');
+
+INSERT INTO Holdings (account_id, security_name, isin, valor, quantity, current_price, performance_value, performance_percent, currency)
+SELECT a.account_id, 'Nestlé SA - Namenaktie', 'CH0038863350', '3886335', 15, 110.25, -150.00, -8.33, 'CHF'
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '222.222.222.2' AND a.account_number = 'DEP987654' AND NOT EXISTS (SELECT 1 FROM Holdings h WHERE h.account_id = a.account_id AND h.isin = 'CH0038863350');
+
+-- 4. Insert Transactions for Maria Schmidt's Privatkonto
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-07-01 00:00:00', 'Lohnzahlung Juli', 4500.00, 'Transfer_In', 5234.50
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '222.222.222.2' AND a.account_number = 'CH11 0000 0000 0000 0001 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-07-01 00:00:00' AND t.amount = 4500.00 AND t.description = 'Lohnzahlung Juli');
+
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-06-28 00:00:00', 'Miete Juni', -1800.00, 'Transfer_Out', 734.50
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '222.222.222.2' AND a.account_number = 'CH11 0000 0000 0000 0001 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-28 00:00:00' AND t.amount = -1800.00 AND t.description = 'Miete Juni');
+
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-06-25 14:30:00', 'Einkauf Coop', -150.30, 'Withdrawal', 2534.50
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '222.222.222.2' AND a.account_number = 'CH11 0000 0000 0000 0001 1' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-25 14:30:00' AND t.amount = -150.30 AND t.description = 'Einkauf Coop');
+
+-- 5. Insert Payment Methods for Maria Schmidt
+INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date, daily_limit, monthly_limit, currency)
+SELECT c.client_id, 'Debit Card', 'Debit Mastercard Private', '3333xxxx3333', '12/2026', 4000.00, 8000.00, 'CHF'
+FROM Clients c WHERE c.client_identifier = '222.222.222.2'
+  AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Debit Card' AND p.name = 'Debit Mastercard Private');
+
+INSERT INTO PaymentMethods (client_id, method_type, name, daily_limit, monthly_limit, currency)
+SELECT c.client_id, 'TWINT', 'Raiffeisen TWINT', 2500.00, 4000.00, 'CHF'
+FROM Clients c WHERE c.client_identifier = '222.222.222.2'
+  AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'TWINT' AND p.name = 'Raiffeisen TWINT');
+
+
+-- ##############################################################
+-- ### INSERT CLIENT 3: Tech Solutions GmbH DATA             ###
+-- ##############################################################
+
+-- 1. Insert Client: Tech Solutions GmbH
+INSERT INTO Clients (full_name, client_identifier, client_type, email, phone, address)
+VALUES ('Tech Solutions GmbH', '333.333.333.3', 'Company', 'info@techsolutions.ch', '+41 44 987 65 43', 'Industriestrasse 5, 9000 St. Gallen')
+ON CONFLICT(client_identifier) DO UPDATE SET
+    full_name=excluded.full_name,
+    client_type=excluded.client_type,
+    email=excluded.email,
+    phone=excluded.phone,
+    address=excluded.address;
+
+-- 2. Insert Accounts for Tech Solutions GmbH
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency)
+SELECT c.client_id, 'CH33 0000 0000 0000 0003 3', 'Checking', 'Geschäftskonto', 'Konten', 152345.60, 'CHF'
+FROM Clients c WHERE c.client_identifier = '333.333.333.3' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'CH33 0000 0000 0000 0003 3');
+
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency)
+SELECT c.client_id, 'CH44 0000 0000 0000 0004 4', 'Savings', 'Reservekonto', 'Konten', 75000.00, 'CHF'
+FROM Clients c WHERE c.client_identifier = '333.333.333.3' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'CH44 0000 0000 0000 0004 4');
+
+INSERT INTO Accounts (client_id, account_number, account_type, account_name, asset_category, balance, currency, rate_margin)
+SELECT c.client_id, 'CRED456', 'Loan', 'Betriebskredit', 'Kredite', -50000.00, 'CHF', 0.015 -- Example margin
+FROM Clients c WHERE c.client_identifier = '333.333.333.3' AND NOT EXISTS (SELECT 1 FROM Accounts WHERE account_number = 'CRED456');
+
+-- 3. Insert Holdings for Tech Solutions GmbH (None in this example)
+
+-- 4. Insert Transactions for Tech Solutions GmbH's Geschäftskonto
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-07-05 00:00:00', 'Zahlungseingang Kunde ABC AG', 15000.00, 'Transfer_In', 152345.60
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '333.333.333.3' AND a.account_number = 'CH33 0000 0000 0000 0003 3' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-07-05 00:00:00' AND t.amount = 15000.00 AND t.description = 'Zahlungseingang Kunde ABC AG');
+
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-06-25 00:00:00', 'Lohnzahlungen Juni', -60000.00, 'Transfer_Out', 137345.60
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '333.333.333.3' AND a.account_number = 'CH33 0000 0000 0000 0003 3' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-25 00:00:00' AND t.amount = -60000.00 AND t.description = 'Lohnzahlungen Juni');
+
+INSERT INTO Transactions (account_id, transaction_date, description, amount, transaction_type, running_balance)
+SELECT a.account_id, '2022-06-15 00:00:00', 'Zahlung Lieferant XYZ GmbH', -25000.00, 'Transfer_Out', 197345.60
+FROM Accounts a JOIN Clients c ON a.client_id = c.client_id WHERE c.client_identifier = '333.333.333.3' AND a.account_number = 'CH33 0000 0000 0000 0003 3' AND NOT EXISTS (SELECT 1 FROM Transactions t WHERE t.account_id = a.account_id AND t.transaction_date = '2022-06-15 00:00:00' AND t.amount = -25000.00 AND t.description = 'Zahlung Lieferant XYZ GmbH');
+
+-- 5. Insert Payment Methods for Tech Solutions GmbH
+INSERT INTO PaymentMethods (client_id, method_type, name, masked_identifier, expiry_date, currency, monthly_limit)
+SELECT c.client_id, 'Credit Card', 'Business Mastercard Silber', '4444xxxx4444', '08/2025', 'CHF', 20000.00
+FROM Clients c WHERE c.client_identifier = '333.333.333.3'
+  AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Credit Card' AND p.name = 'Business Mastercard Silber');
 
 -- Products
 

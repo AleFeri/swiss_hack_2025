@@ -182,34 +182,17 @@ def query_peter_muster_data():
         if conn:
             conn.close()
 
-# --- Azure OpenAI Client Setup ---
-# Choose ONE method below: Environment Variables (Recommended) or Direct Values
 
-# Method 1: Environment Variables (Recommended & Safer)
 try:
     azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
     api_key = os.getenv("AZURE_OPENAI_API_KEY")
     if not azure_endpoint or not api_key:
-        # If using env vars, make sure they are set before running the script!
-        # Example: export AZURE_OPENAI_ENDPOINT="YOUR_ENDPOINT"
-        #          export AZURE_OPENAI_API_KEY="YOUR_KEY"
         raise ValueError("Environment variables AZURE_OPENAI_ENDPOINT or AZURE_OPENAI_API_KEY not set.")
     client = AzureOpenAI(
         azure_endpoint=azure_endpoint,
         api_key=api_key,
-        api_version="2024-02-01" # Or your preferred API version
+        api_version="2024-02-01" 
     )
-    print("--- Azure OpenAI Client Initialized Successfully (using environment variables) ---")
-
-# Method 2: Direct Values (Less Secure - Use only for quick local tests)
-# try:
-#     # WARNING: Avoid hardcoding credentials in production code or shared repositories!
-#     client = AzureOpenAI(
-#         azure_endpoint = "https://swisshacks-aoai-westeurope.openai.azure.com/", # Your actual endpoint URL
-#         api_key = "2yjmTT6QIzFt2Aln8FkFd49mBUhqtp6GEFAOQX11ANvxGOfjUw4IJQQJ99BDAC5RqLJXJ3w3AAABACOG9ngV",  # Your actual API key
-#         api_version = "2024-02-01" # Or your preferred API version
-#     )
-#     print("--- Azure OpenAI Client Initialized Successfully (using direct values) ---")
 
 except ValueError as ve:
     print(f"Client Setup Error: {ve}")
@@ -268,7 +251,8 @@ if __name__ == "__main__":
             "Wie viel Konten besitzt Peter Muster?",
             "Was ist der Zins auf der Festhypothek von Peter Muster?",
             "Wie viel zahlt Peter Muster für seine Mitgliedschaft?",
-            "Gib mir eine maximal 7 satz zusammenfassung über den Zustand von Peter Muster's Vermögen."
+            "Gib mir eine maximal 7 satz zusammenfassung über den Zustand von Peter Muster's Vermögen.",
+            ""
         ]
 
         # Ask each question
