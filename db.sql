@@ -486,3 +486,14 @@ VALUES (
     (SELECT id FROM products WHERE name = 'Essential'),
     'https://www.raiffeisen.ch/content/dam/www/rch/pdf/produkte/zahlen/fr/compte-prive-fiche-produit.pdf'
 );
+
+
+CREATE TABLE IF NOT EXISTS ClientProducts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (client_id, product_id),
+    FOREIGN KEY (client_id) REFERENCES Clients (client_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
+);
