@@ -1,0 +1,1 @@
+sqlite3 client_history.db < db.sql
