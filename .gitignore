@@ -1,0 +1,17 @@
+# .gitignore file content
+
+# Ignore SQLite database files
+peter_muster_and_products.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignore Python virtual environment if you have one in the repo
+env/
+venv/
+*.env/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
