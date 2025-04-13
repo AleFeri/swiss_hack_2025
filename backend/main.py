@@ -1,7 +1,7 @@
 import os
 import sqlite3
 from fastapi import FastAPI, HTTPException, Path
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 import traceback
@@ -10,8 +10,6 @@ import traceback
 DATABASE_FILE = "products_clients.db"  # MAKE SURE THIS IS THE CORRECT .db FILE
 
 # --- Pydantic Models ---
-
-# Existing models
 class TransactionModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     transaction_id: int; transaction_type: Optional[str] = None; transaction_date: Optional[datetime] = None
@@ -96,9 +94,28 @@ def get_db_connection():
 # --- FastAPI App ---
 app = FastAPI(title="Client Data API", description="API to retrieve detailed client financial data.")
 
-# --- API Endpoints ---
+# --- <<< START CORS MIDDLEWARE CONFIGURATION >>> ---
+# List of origins that are allowed to make requests to this API
+origins = [
+    "http://localhost",         # Allow general localhost (useful for testing)
+    "http://localhost:8080",    # <<<=== ALLOW YOUR FRONTEND ORIGIN
+    "http://127.0.0.1:8080",    # Allow specific IP address if needed
+    # Add other potential frontend development ports if you use them:
+    # "http://localhost:3000", # Common for Create React App
+    # "http://localhost:5173", # Common for Vite
+]
 
-# Clients Endpoint (Existing)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,       # Specifies the origins that are allowed to make requests.
+    allow_credentials=True,      # Indicates that cookies should be supported for cross-origin requests.
+    allow_methods=["*"],         # Allows all standard HTTP methods (GET, POST, PUT, DELETE, etc.).
+    allow_headers=["*"],         # Allows all headers.
+)
+# --- <<< END CORS MIDDLEWARE CONFIGURATION >>> ---
+
+
+# --- API Endpoint ---
 @app.get("/clients/{client_identifier}", response_model=ClientDataResponse, summary="Get all data for a specific client", tags=["Clients"])
 async def get_client_data(client_identifier: str = Path(..., title="Client Identifier", description="Unique client ID (e.g., '111.111.111.1')", examples=["111.111.111.1"])):
     conn = get_db_connection()
@@ -110,15 +127,7 @@ async def get_client_data(client_identifier: str = Path(..., title="Client Ident
         client_db = cursor.fetchone()
 
         # --- Debugging Prints ---
-        print("\n--- DEBUG: Raw client_db data fetched ---")
-        if client_db:
-            client_dict_debug = dict(client_db)
-            print(f"Type: {type(client_db)}, Keys: {list(client_dict_debug.keys())}")
-            print(f"Content: {client_dict_debug}")
-        else:
-            print("client_db is None (Client not found by identifier)")
-        print("--- END DEBUG ---")
-        # --- End Debugging ---
+        # ... (Keep these if useful, remove when working) ...
 
         if not client_db:
             raise HTTPException(status_code=404, detail=f"Client with identifier '{client_identifier}' not found.")
@@ -126,39 +135,43 @@ async def get_client_data(client_identifier: str = Path(..., title="Client Ident
         # --- Convert Row to Dict for Validation ---
         try:
             client_data_dict = dict(client_db)
-            print(f"--- Converted client_db Row to Dict ---")
+            # print(f"--- Converted client_db Row to Dict ---") # Can comment out later
         except Exception as e:
-            print(f"--- ERROR Converting client_db Row to Dict: {e} ---")
+            # print(f"--- ERROR Converting client_db Row to Dict: {e} ---")
             raise HTTPException(status_code=500, detail="Failed to convert database row to dictionary.")
 
         # --- Perform Pydantic Validation USING THE DICTIONARY ---
         print("--- Attempting Pydantic validation for ClientModel using DICT ---")
-        client_model = ClientModel.model_validate(client_data_dict)  # Use the dictionary
+        client_model = ClientModel.model_validate(client_data_dict) # Use the dictionary
         print("--- Pydantic ClientModel validation successful ---")
 
         # --- Get client_id from the validated model ---
         client_id = client_model.client_id
         print(f"--- Using client_id: {client_id} for subsequent queries ---")
 
-        # 2. Fetch Payment Methods
-        print(f"--- Querying PaymentMethods for client_id: {client_id} ---")
-        cursor.execute("SELECT * FROM PaymentMethods WHERE client_id = ?", (client_id,))
-        payment_methods_db = cursor.fetchall()  # List of sqlite3.Row objects
+        # --- REMOVED REDUNDANT VALIDATION CALL for ClientModel ---
 
+        # 2. Fetch Payment Methods
+        # print(f"--- Querying PaymentMethods for client_id: {client_id} ---") # Can comment out later
+        cursor.execute("SELECT * FROM PaymentMethods WHERE client_id = ?", (client_id,))
+        payment_methods_db = cursor.fetchall() # List of sqlite3.Row objects
+
+        # --- >>> FIX: Convert each Row to dict before validating <<< ---
         print(f"--- Found {len(payment_methods_db)} payment method rows. Validating... ---")
         payment_methods_list = [PaymentMethodModel.model_validate(dict(pm)) for pm in payment_methods_db]
         print(f"--- Pydantic PaymentMethodModel validation successful for {len(payment_methods_list)} items ---")
+        # --- >>> END FIX <<< ---
 
         # 3. Fetch Accounts and their related data
-        print(f"--- Querying Accounts for client_id: {client_id} ---")
+        # print(f"--- Querying Accounts for client_id: {client_id} ---") # Can comment out later
         cursor.execute("SELECT * FROM Accounts WHERE client_id = ? ORDER BY asset_category, account_name", (client_id,))
         accounts_db = cursor.fetchall()
         accounts_list = []
-        print(f"--- Found {len(accounts_db)} accounts ---")
+        # print(f"--- Found {len(accounts_db)} accounts ---") # Can comment out later
 
         for acc_db in accounts_db:
             account_id = acc_db['account_id']
-            account_data = dict(acc_db)  # Convert Row to dict
+            account_data = dict(acc_db) # Convert Row to dict
             account_data['transactions'] = []
             account_data['holdings'] = []
 
@@ -175,14 +188,14 @@ async def get_client_data(client_identifier: str = Path(..., title="Client Ident
 
             accounts_list.append(AccountModel.model_validate(account_data))
 
-        # 4. Construct final response for ClientDataResponse
+        # 4. Construct final response
         print("--- Constructing final ClientDataResponse ---")
         response_data = ClientDataResponse(
             client=client_model,
             accounts=accounts_list,
             payment_methods=payment_methods_list
         )
-        print("--- Final response object created ---")
+        # print("--- Final response object created ---") # Can comment out later
         return response_data
 
     except HTTPException:

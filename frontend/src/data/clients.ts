@@ -1,43 +1,57 @@
+// src/data/clients.ts
 
-import { Client } from '../types';
+import { ClientApiResponse, ClientListItem } from '../types'; // Added ClientListItem
 
-export const clients: Client[] = [
-  {
-    id: '1',
-    name: 'Anna Müller',
-    age: 34,
-    occupation: 'Software Developer',
-    funFacts: [
-      'Recently bought a new apartment',
-      'Interested in sustainable investments',
-      'Travels frequently for work'
-    ],
-    portfolioDetails: 'Has a savings account with CHF 50,000 and a small investment portfolio.'
-  },
-  {
-    id: '2',
-    name: 'Thomas Schmidt',
-    age: 45,
-    occupation: 'Doctor',
-    funFacts: [
-      'Planning for early retirement',
-      'Has two children in university',
-      'Looking to renovate home'
-    ],
-    portfolioDetails: 'Has a diverse portfolio including stocks, bonds, and real estate investments.'
-  },
-  {
-    id: '3',
-    name: 'Maria Weber',
-    age: 28,
-    occupation: 'Marketing Manager',
-    funFacts: [
-      'Recently got married',
-      'Planning to buy first property',
-      'Interested in starting a business in the next 5 years'
-    ],
-    portfolioDetails: 'Has a savings account with CHF 35,000 and some company shares.'
+// --- Configuration ---
+const API_BASE_URL = 'http://127.0.0.1:8000'; // Your FastAPI backend address
+
+/**
+ * Fetches detailed client data from the backend API.
+ * @param identifier - The client identifier (e.g., '111.111.111.1')
+ * @returns A Promise resolving to the ClientApiResponse object.
+ * @throws An error if the fetch fails or the response is not ok.
+ */
+export async function fetchClientDetails(identifier: string): Promise<ClientApiResponse> {
+  const apiUrl = `${API_BASE_URL}/clients/${identifier}`;
+  console.log(`Fetching client details from: ${apiUrl}`);
+  try {
+    const response = await fetch(apiUrl);
+    if (!response.ok) {
+      let errorDetail = `API error fetching details! status: ${response.status}`;
+      try { const errorData = await response.json(); errorDetail = errorData.detail || errorDetail; } catch (e) {}
+      console.error(`API Error Response: ${errorDetail}`);
+      throw new Error(errorDetail);
+    }
+    const data: ClientApiResponse = await response.json();
+    console.log('Successfully fetched client details.');
+    return data;
+  } catch (error) {
+    console.error('Error in fetchClientDetails:', error);
+    throw error;
   }
-];
+}
 
-export const selectedClient = clients[0];
+/**
+ * Fetches the list of available clients for selection.
+ * @returns A Promise resolving to an array of ClientListItem objects.
+ * @throws An error if the fetch fails.
+ */
+export async function fetchClientList(): Promise<ClientListItem[]> {
+    const apiUrl = `${API_BASE_URL}/clients`; // Endpoint to list clients
+    console.log(`Fetching client list from: ${apiUrl}`);
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            let errorDetail = `API error listing clients! status: ${response.status}`;
+             try { const errorData = await response.json(); errorDetail = errorData.detail || errorDetail; } catch (e) {}
+            console.error(`API Error Response: ${errorDetail}`);
+            throw new Error(errorDetail);
+        }
+        const data: ClientListItem[] = await response.json();
+        console.log(`Fetched ${data.length} clients for list.`);
+        return data;
+    } catch(error) {
+        console.error('Error in fetchClientList:', error);
+        throw error;
+    }
+}
