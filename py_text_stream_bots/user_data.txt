@@ -1,0 +1,240 @@
+CLIENT INFORMATION
+Client ID: 1
+First Name: Peter
+Last Name: Muster
+Client Identifier: 111.111.111.1
+Membership Number: 123.456.789.0
+Full Name: Peter Muster
+Client Type: Individual
+Email / Phone / Address: (No value)
+Created At: 2000/12/25
+
+TRANSACTIONS
+These transactions are recorded for the “Mitglieder Privatkonto” (Account ID 1):
+Transaction ID 1
+Date: 2022-07-06 00:00:00
+Description: E-Banking Sammellauf aus Einzahlungen
+Amount: -750.25 CHF
+Type: Transfer_Out
+Running Balance: 13,459.10 CHF
+Transaction ID 2
+Date: 2022-06-05 00:00:00
+Description: Gutschrift TWINT von Muster Blumen Gmb
+Amount: 49.80 CHF
+Type: Transfer_In
+Running Balance: 14,209.35 CHF
+Transaction ID 3
+Date: 2022-06-04 00:00:00
+Description: E-Banking Sammellauf aus Einzahlungen
+Amount: -1,650.00 CHF
+Type: Transfer_Out
+Running Balance: 14,159.55 CHF
+Transaction ID 4
+Date: 2022-06-02 09:10:00
+Description: Bezug Bancomat Rorschach
+Amount: -400.00 CHF
+Type: Withdrawal
+Running Balance: 15,809.55 CHF
+Transaction ID 5
+Date: 2022-05-18 00:00:00
+Description: E-Banking Sammellauf aus Einzahlungen
+Amount: -3,406.15 CHF
+Type: Transfer_Out
+Running Balance: 16,209.55 CHF
+Transaction ID 6
+Date: 2022-05-02 09:10:00
+Description: Bezug Bancomat Rorschach
+Amount: -600.00 CHF
+Type: Withdrawal
+Running Balance: 19,615.70 CHF
+Transaction ID 7
+Date: 2022-04-07 11:04:00
+Description: Einkauf Metzgerei Müller
+Amount: -116.00 CHF
+Type: Withdrawal
+Running Balance: 20,215.70 CHF
+
+ACCOUNTS
+Each record below represents one account linked to Peter Muster (client_id 1):
+Account ID 1
+Account Number: CH00 0000 0000 0000 0000 1
+Type: Checking
+Name: Mitglieder Privatkonto
+Asset Category: Konten
+Balance: 13,459.10 CHF
+Other fields (interest_rate, term dates, notes): (None)
+Account ID 2
+Account Number: CH00 0000 0000 0000 0000 2
+Type: Savings
+Name: Mitglieder Sparkonto
+Asset Category: Konten
+Balance: 36,781.25 CHF
+Account ID 3
+Account Number: CH00 0000 0000 0000 0000 3
+Type: Savings
+Name: Geschenksparkonto "Maya Muster"
+Asset Category: Konten
+Balance: 11,832.61 CHF
+Account ID 4
+Account Number: CH00 0000 0000 0000 0000 6
+Type: Checking
+Name: Abrechnungskonto Depot
+Asset Category: Anlagen
+Balance: 1,487.30 CHF
+Account ID 5
+Account Number: 123456789A
+Type: Investment
+Name: Wertschriftendepot
+Asset Category: Anlagen
+Balance: 24,444.75 CHF
+Account ID 6
+Account Number: CH00 0000 0000 0000 0000 7
+Type: Checking
+Name: Abrechnungskonto Rio
+Asset Category: Anlagen
+Balance: 548.20 CHF
+Account ID 7
+Account Number: 123456789B
+Type: Investment
+Name: Rio-Depot
+Asset Category: Anlagen
+Balance: 12,541.10 CHF
+Notes: Parent group: Mein Rio 123456.2
+Account ID 8
+Account Number: CH00 0000 0000 0000 0000 8
+Type: Pension
+Name: Vorsorgekonto 3a
+Asset Category: Vorsorge
+Balance: 48,510.24 CHF
+Notes: Einzahlung: 3500.00 von 6883.00
+Account ID 9
+Account Number: 123456789C
+Type: Pension
+Name: Vorsorgefonds 3a
+Asset Category: Vorsorge
+Balance: 52,027.50 CHF
+Cost Basis: 44,000.00 CHF
+Performance Value: 8,027.50
+Performance Percent: 18.24%
+Notes: Parent group: Meine Vorsorge 123456.3
+Account ID 10
+Account Number: ANTEIL-123.456.789.0
+Type: Membership
+Name: Genossenschafts-Anteilschein
+Asset Category: Mitgliedschaft
+Balance: 200.00 CHF
+Notes: MemberPlus-Kunde
+Account ID 11
+Account Number: Z123456789
+Type: Loan
+Name: Basiskredit Hypothek
+Asset Category: Kredite
+Balance: -800,000.00 CHF
+Notes: Total genutzter Betrag
+Account ID 12
+Account Number: A123456789
+Type: Loan
+Name: Festhypothek
+Asset Category: Kredite
+Balance: -300,000.00 CHF
+Interest Rate: 0.0025
+Term Start Date: 2022-04-30
+Term End Date: 2028-04-30
+Account ID 13
+Account Number: B123456789
+Type: Loan
+Name: Festhypothek
+Asset Category: Kredite
+Balance: -300,000.00 CHF
+Interest Rate: 0.0025
+Term Start Date: 2022-04-30
+Term End Date: 2028-04-30
+Account ID 14
+Account Number: C123456789
+Type: Loan
+Name: SARON Flex-Hypothek
+Asset Category: Kredite
+Balance: -200,000.00 CHF
+Rate Margin: 0.008
+Term Start Date: 2022-04-30
+Term End Date: 2028-04-30
+
+HOLDINGS
+These holdings belong to the “Wertschriftendepot” (Account ID 5):
+Holding ID
+Security: Swiss Re AG - Namenaktie
+ISIN: CH0126881561
+Valor: 12688156
+Quantity: 150
+Currency: CHF
+Current Price: 76.16
+Performance Value: -1,633.50
+Performance Percent: -12.51%
+Holding ID 2
+Security: Zur Rose Group AG - Namenaktie
+ISIN: CH0042615283
+Valor: 4261528
+Quantity: 50
+Currency: CHF
+Current Price: 60.40
+Performance Value: -12,802.39
+Performance Percent: -80.91
+Holding ID 3
+Security: ABB Ltd - Namenaktie
+ISIN: CH0012221716
+Valor: 1222171
+Quantity: 100
+Currency: CHF
+Current Price: 28.81
+Performance Value: 1,263.00
+Performance Percent: 78.06%
+Holding ID 4
+Security: Novartis AG - Namenaktie
+ISIN: CH0012005267
+Valor: 1200526
+Quantity: 35
+Currency: CHF
+Current Price: 80.45
+Performance Value: 1,014.49
+Performance Percent: 56.32%
+Holding ID 5
+Security: Logitech International SA - Namenaktie
+ISIN: CH0025751329
+Valor: 2575132
+Quantity: 50
+Currency: CHF
+Current Price: 54.96
+Performance Value: -721.44
+Performance Percent: -20.79%
+Holding ID 6
+Security: Stadler Rail AG - Namenaktie
+ISIN: CH0002178181
+Valor: 217818
+Quantity: 50
+Currency: CHF
+Current Price: 31.12
+Performance Value: -664.12
+Performance Percent: -29.91%
+
+PAYMENT METHODS
+Payment methods linked directly to client_id 1 are:
+Payment Method ID 1
+Type: TWINT
+Name: Raiffeisen TWINT
+Daily Limit: 3,000.00 CHF
+Monthly Limit: 5,000.00 CHF
+Provider: Raiffeisen
+Payment Method ID 2
+Type: Debit Card
+Name: Debit Mastercard Private
+Masked Identifier: 1111xxxx1111
+Expiry Date: 04/2025
+Daily Limit: 5,000.00 CHF
+Monthly Limit: 10,000.00 CHF
+Provider: Raiffeisen
+Payment Method ID 3
+Type: Credit Card
+Name: Raiffeisen Mastercard Gold
+Masked Identifier: 2222xxxx2222
+Expiry Date: 03/2024
+Provider: Raiffeisen

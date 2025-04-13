@@ -1,0 +1,237 @@
+Product Categories and Products
+
+Category: Credit (Color: #e74c3c)
+
+Lombard Loan
+• Icon: FaHandHoldingUsd
+• Impact Level: high
+• Description: (none)
+
+Private or Automotive Loan
+• Icon: FaCar
+• Impact Level: mid
+• Description: (none)
+
+Category: Investment Solutions (Color: #3498db)
+
+Wealth Management Mandate
+• Icon: FaBriefcase
+• Impact Level: high
+• Description: (none)
+
+Raiffeisen Rio
+• Icon: FaWater
+• Impact Level: low
+• Description: (none)
+
+Advisory Mandate
+• Icon: FaComments
+• Impact Level: mid
+• Description: (none)
+
+Investment Fund Savings Plan
+• Icon: FaPiggyBank
+• Impact Level: mid
+• Description: (none)
+
+Securities Deposit
+• Icon: FaRegFileAlt
+• Impact Level: low
+• Description: (none)
+
+Category: Investment Products (Color: #2ecc71)
+
+Investment Funds
+• Icon: FaChartPie
+• Impact Level: mid
+• Description: (none)
+
+Structured Products
+• Icon: FaCubes
+• Impact Level: high
+• Description: (none)
+
+Currency Instruments
+• Icon: FaExchangeAlt
+• Impact Level: high
+• Description: (none)
+
+Precious Metals
+• Icon: FaGem
+• Impact Level: mid
+• Description: (none)
+
+Additional Tier 1 Loan
+• Icon: FaHandshake
+• Impact Level: low
+• Description: (none)
+
+Term Investment
+• Icon: FaClock
+• Impact Level: mid
+• Description: (none)
+
+Category: Investment Themes (Color: #f39c12)
+
+Tech Innovators
+• Icon: FaLaptop
+• Impact Level: high
+• Description: (none)
+
+Smart Healthcare
+• Icon: FaHeartbeat
+• Impact Level: high
+• Description: (none)
+
+Aqua
+• Icon: FaTint
+• Impact Level: low
+• Description: (none)
+
+Green Energy
+• Icon: FaLeaf
+• Impact Level: mid
+• Description: (none)
+
+Top Swiss Pick
+• Icon: FaStar
+• Impact Level: low
+• Description: (none)
+
+Category: Mortgage (Color: #9b59b6)
+
+Fixed Rate Mortgage
+• Icon: FaLock
+• Impact Level: mid
+• Description: (none)
+
+SARON Flex Mortgage
+• Icon: FaSyncAlt
+• Impact Level: mid
+• Description: (none)
+
+Variable Rate Mortgage
+• Icon: FaPercentage
+• Impact Level: high
+• Description: (none)
+
+Category: Investment Advice (Color: #1abc9c)
+
+Retirement and Insurance Advice
+• Icon: FaUserTie
+• Impact Level: low
+• Description: (none)
+
+Retirement Planning Advice
+• Icon: FaRegCalendarAlt
+• Impact Level: mid
+• Description: (none)
+
+Succession Advice and Mandate for Incapacity
+• Icon: FaBalanceScaleLeft
+• Impact Level: high
+• Description: (none)
+
+Retirement and Investment Advice
+• Icon: FaChartLine
+• Impact Level: mid
+• Description: (none)
+
+Category: Pension Products (Color: #f1c40f)
+
+Pillar 3a Account
+• Icon: FaWallet
+• Impact Level: low
+• Description: (none)
+
+Pension Funds
+• Icon: FaUniversity
+• Impact Level: mid
+• Description: (none)
+
+Digital Pillar 3a
+• Icon: FaMobileAlt
+• Impact Level: low
+• Description: (none)
+
+Prevision Investment Fund Savings Plan
+• Icon: FaRegChartBar
+• Impact Level: mid
+• Description: (none)
+
+Savings Goals Coverage
+• Icon: FaBullseye
+• Impact Level: low
+• Description: (none)
+
+Category: Raiffeisen Insurances (Color: #34495e)
+
+Amortization Insurance
+• Icon: FaRegCreditCard
+• Impact Level: low
+• Description: (none)
+
+Household Insurance
+• Icon: FaHome
+• Impact Level: low
+• Description: (none)
+
+Death Insurance
+• Icon: FaSkull
+• Impact Level: high
+• Description: (none)
+
+Income Disability Pension
+• Icon: FaHospital
+• Impact Level: high
+• Description: (none)
+
+Capital Life Insurance
+• Icon: FaHeart
+• Impact Level: mid
+• Description: (none)
+
+Home Insurance
+• Icon: FaShieldAlt
+• Impact Level: mid
+• Description: (none)
+
+Category: Credit and Debit Cards (Color: #16a085)
+
+Debit Card (Visa/Mastercard)
+• Icon: FaCreditCard
+• Impact Level: low
+• Description: (none)
+
+Standard Credit Card (Visa/Mastercard - 1 Year Free)
+• Icon: FaCcVisa
+• Impact Level: mid
+• Description: (none)
+
+Gold Credit Card (No Fees for EUR/USD & Worldwide Replacement)
+• Icon: FaCcMastercard
+• Impact Level: high
+• Description: (none)
+
+Category: Packages (Color: #d35400)
+
+YoungMemberPlus
+• Icon: FaChild
+• Impact Level: low
+• Description: For individuals under 26 years old.
+
+Essential
+• Icon: FaInfoCircle
+• Impact Level: high
+• Description: A monthly fee of CHF 9 is charged if the following condition is not met: A regular income entry (e.g., salary or pension) of at least CHF 1,260, or mortgage/savings/deposit or retirement capital of at least CHF 20,000. The condition must be met for at least three consecutive months and then continuously. The reference date for taxation is November 30. • Linked Document:
+URL: https://www.raiffeisen.ch/content/dam/www/rch/pdf/produkte/zahlen/fr/compte-prive-fiche-produit.pdf
+
+Member
+• Icon: FaUser
+• Impact Level: mid
+• Description: Preferred interest rate on savings account plus share of Raiffeisen.
+
+Member Plus
+• Icon: FaCrown
+• Impact Level: high
+• Description: Preferred interest rate on savings account plus free concert and museum tickets.
