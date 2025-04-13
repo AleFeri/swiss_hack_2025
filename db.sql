@@ -331,6 +331,11 @@ FROM Clients c WHERE c.client_identifier = '333.333.333.3'
   AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Credit Card' AND p.name = 'Business Mastercard Silber');
 
 
+CREATE TABLE IF NOT EXISTS product_categories (
+    product_categories_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    color TEXT
+);
 
 -- Insert product categories with assigned colors
 INSERT INTO product_categories (name, color) VALUES ('Credit', '#e74c3c');                -- Group 1: Red-ish
@@ -343,6 +348,16 @@ INSERT INTO product_categories (name, color) VALUES ('Pension Products', '#f1c40
 INSERT INTO product_categories (name, color) VALUES ('Raiffeisen Insurances', '#34495e');   -- Group 8: Dark Blue/Grey
 INSERT INTO product_categories (name, color) VALUES ('Credit and Debit Cards', '#16a085');   -- Group 9: Teal
 INSERT INTO product_categories (name, color) VALUES ('Packages', '#d35400');               -- Group 10: Orange-red
+
+
+CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, -- Auto-incrementing ID for each product
+    category_id INTEGER NOT NULL,         -- Category ID (integer)
+    description TEXT,
+    name TEXT NOT NULL,                   -- Product name (text)
+    react_icon TEXT NOT NULL,             -- React icon (text)
+    impact_level TEXT NOT NULL            -- Impact level (text)
+);
 
 -- Group 1: Credit
 INSERT INTO products (category_id, name, react_icon, impact_level) VALUES (1, 'Lombard Loan', 'FaHandHoldingUsd', 'high');
@@ -430,6 +445,15 @@ INSERT INTO products (category_id, name, description, react_icon, impact_level) 
     'FaCrown',
     'high'
 );
+
+CREATE TABLE IF NOT EXISTS documents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, -- Auto-incrementing ID for each document
+    product_id INTEGER NOT NULL,          -- Foreign key referencing the products table
+    url TEXT NOT NULL,                    -- URL of the document
+    FOREIGN KEY (product_id) REFERENCES products (id) -- Enforce foreign key constraint
+);
+
+
 
 -- Example: Insert a document for the "Essential" product.
 INSERT INTO documents (product_id, url) 
