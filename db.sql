@@ -85,30 +85,7 @@ CREATE TABLE IF NOT EXISTS PaymentMethods (
 );
 
 
--- --- Create Product Catalog Tables (IF NOT EXISTS) ---
-CREATE TABLE IF NOT EXISTS product_categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE,
-    color TEXT NOT NULL
-);
 
-CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT DEFAULT NULL,
-    react_icon TEXT NOT NULL,
-    UNIQUE(category_id, name),
-    FOREIGN KEY (category_id) REFERENCES product_categories(id)
-);
-
-CREATE TABLE IF NOT EXISTS documents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL,
-    url TEXT NOT NULL,
-    UNIQUE(product_id, url),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
 
 
 -- ##############################################################
@@ -353,33 +330,7 @@ SELECT c.client_id, 'Credit Card', 'Business Mastercard Silber', '4444xxxx4444',
 FROM Clients c WHERE c.client_identifier = '333.333.333.3'
   AND NOT EXISTS (SELECT 1 FROM PaymentMethods p WHERE p.client_id = c.client_id AND p.method_type = 'Credit Card' AND p.name = 'Business Mastercard Silber');
 
--- Products
 
--- Create the table for product categories
-CREATE TABLE product_categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    color TEXT NOT NULL
-);
-
--- Create the table for products with an additional column "impact_level"
-CREATE TABLE products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    category_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT DEFAULT NULL,
-    react_icon TEXT NOT NULL,
-    impact_level TEXT NOT NULL CHECK (impact_level IN ('low', 'mid', 'high')),
-    FOREIGN KEY (category_id) REFERENCES product_categories(id)
-);
-
--- Create the documents table to link one or more documents to a product.
-CREATE TABLE documents (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL,
-    url TEXT NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
 
 -- Insert product categories with assigned colors
 INSERT INTO product_categories (name, color) VALUES ('Credit', '#e74c3c');                -- Group 1: Red-ish
@@ -497,3 +448,6 @@ CREATE TABLE IF NOT EXISTS ClientProducts (
     FOREIGN KEY (client_id) REFERENCES Clients (client_id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
+
+INSERT OR IGNORE INTO ClientProducts (client_id, product_id) VALUES (1, 1);
+INSERT OR IGNORE INTO ClientProducts (client_id, product_id) VALUES (1, 2);
