@@ -116,6 +116,32 @@ app.add_middleware(
 )
 # --- <<< END CORS MIDDLEWARE CONFIGURATION >>> ---
 
+@app.get("/clients/")
+async def get_client_data():
+    """
+    Fetches the first client record from the database.
+    """
+    try:
+        # Use 'with' statement for automatic connection management (commit/close)
+        with sqlite3.connect(DATABASE_FILE) as conn:
+            conn.row_factory = sqlite3.Row # Fetch rows as dictionary-like objects
+            cursor = conn.cursor()
+
+            # Fetch the first client found. Consider adding WHERE clause if needed.
+            cursor.execute("SELECT * FROM Clients LIMIT 5")
+            client_row = cursor.fetchall() # Fetches one row or None
+
+            if client_row is None:
+                # No client found in the table
+                raise HTTPException(status_code=404, detail="Client not found")
+
+            # Convert the sqlite3.Row directly to a dictionary for the response
+            # FastAPI can serialize this standard dict to JSON.
+            # No need for Pydantic validation here as per instructions.
+            return list(client_row)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An internal server error occurred.")
+
 
 # --- API Endpoint ---
 @app.get("/clients/{client_identifier}", response_model=ClientDataResponse, summary="Get all data for a specific client", tags=["Clients"])
