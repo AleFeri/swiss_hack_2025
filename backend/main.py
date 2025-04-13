@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # --- Configuration ---
-DATABASE_FILE = "products_clients.db"  # MAKE SURE THIS IS THE CORRECT .db FILE
+DATABASE_FILE = "client_history.db"  # MAKE SURE THIS IS THE CORRECT .db FILE
 
 # --- Pydantic Models ---
 class TransactionModel(BaseModel):
