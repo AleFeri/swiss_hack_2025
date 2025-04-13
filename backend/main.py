@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 import traceback
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # --- Configuration ---
 DATABASE_FILE = "products_clients.db"  # MAKE SURE THIS IS THE CORRECT .db FILE
